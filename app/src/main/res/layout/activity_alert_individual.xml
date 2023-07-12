@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/header">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/backButtonIndividual"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginEnd="20dp"
+            app:cardCornerRadius="10dp"
+            android:onClick="goBack">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:contentDescription="Back Button"
+                android:src="@drawable/baseline_arrow_back_ios_new_24" />
+        </androidx.cardview.widget.CardView>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/backButtonIndividual"
+            android:layout_marginTop="35dp"
+            android:layout_marginEnd="20dp"
+            android:id="@+id/pageTitleAI"
+            android:text="Alert Individual"
+            android:textSize="20sp"
+            android:textColor="@color/steel_blue"
+            android:fontFamily="@font/poppins_semibold"
+            />
+        <androidx.cardview.widget.CardView
+            android:id="@+id/profileButton"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginEnd="20dp"
+            app:cardCornerRadius="25dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:contentDescription="Profile Button"
+                android:src="@drawable/baseline_person_24"
+                android:id="@+id/profileImgIndividual"/>
+        </androidx.cardview.widget.CardView>
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_below="@id/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/titleLayout"
+        android:layout_marginEnd="20dp"
+        android:layout_marginStart="30dp">
+        <View
+            android:layout_width="8dp"
+            android:layout_height="40dp"
+            android:id="@+id/titleBlock"
+            android:background="@color/red"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="10dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Select Individuals"
+            android:id="@+id/titleText"
+            android:fontFamily="@font/poppins_bold"
+            android:textSize="20sp"
+            android:paddingVertical="32dp"
+            android:layout_toEndOf="@id/titleBlock"
+            android:textColor="@color/black"
+            />
+
+        <EditText
+            android:id="@+id/titleedit"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_toEndOf="@id/titleBlock"
+            android:alpha="0"
+            android:fontFamily="@font/poppins_bold"
+            android:hint="Search..."
+            android:inputType="text"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+
+        <ImageView
+            android:id="@+id/searchIcon"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="20dp"
+            android:src="@drawable/baseline_search_24"
+            android:contentDescription="searchIcon"
+            android:onClick="startSearch"/>
+
+    </RelativeLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/titleLayout"
+        android:id="@+id/individualsList"
+        android:layout_marginHorizontal="20dp"
+        android:layout_centerHorizontal="true"
+        />
+</RelativeLayout>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".activity.LoginActivity">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_centerInParent="true"
+        app:cardCornerRadius="100dp"
+        app:cardBackgroundColor="@color/saffron"
+        app:cardElevation="20dp"
+        android:visibility="gone"
+        android:id="@+id/stopButton"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:text="Stop"
+            android:layout_gravity="center"
+            android:textSize="30dp"
+            />
+    </androidx.cardview.widget.CardView>
+
+    <RelativeLayout
+        android:id="@+id/loginFragment"
+        android:visibility="visible"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <ImageView
+                android:layout_marginTop="100dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/loginBanner"
+                android:src="@drawable/login_banner"
+                android:contentDescription="Login Banner"
+                android:layout_weight="1"/>
+
+            <RelativeLayout
+                android:visibility="invisible"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:id="@+id/buttonLayout"
+                android:layout_gravity="center_horizontal"
+                >
+                <com.google.android.gms.common.SignInButton
+                    android:id="@+id/googleSignIn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    />
+            </RelativeLayout>
+        </LinearLayout>
+        <ProgressBar
+            android:id="@+id/InitialLoading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="50dp"/>
+
+        <TextView
+            android:id="@+id/appSlogan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Stay Alert - Stay Aware"
+            android:fontFamily="@font/poppins_bold"
+            android:textColor="@color/red"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="50dp"
+            android:textSize="25sp"
+            android:alpha="0"
+            />
+    </RelativeLayout>
+
+</RelativeLayout>

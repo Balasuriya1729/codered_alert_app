@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="red">#FF0000</color>
+    <color name="shimmer_background">#dddddd</color>
+    <color name="light_grey">#DBDBE5</color>
+    <color name="cement">#DBDBE5</color>
+    <color name="tomato">#fe2328</color>
+    <color name="grey">#aa9da9</color>
+    <color name="sky_blue">#26bffc</color>
+    <color name="steel_blue">#312892</color>
+    <color name="violet">#FF7118EA</color>
+    <color name="gold_yellow">#fab325</color>
+    <color name="saffron">#f66234</color>
+    <color name="white40">#66FFFFFF</color>
+    <color name="white30">#4DFFFFFF</color>
+    <color name="lBlack">#OD000000</color>
+    <color name="transparent">#00000000</color>
+</resources>
