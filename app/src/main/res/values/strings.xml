@@ -1,7 +1,0 @@
-<resources>
-    <string name="app_name">CodeRED</string>
-    <string name="server_client_id">1081992492911-sm2t886savupodi65105ccmr4o2tv11h.apps.googleusercontent.com</string>
-    <string name="client_secret">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</string>
-    <string name="preferences_name">com.example.codered.PRIVATE_USER_DATA</string>
-    <string name="JSONObject">com.example.codered.JSONObject</string>
-</resources>
