@@ -4,8 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".activity.LoginActivity">
-
+    tools:context=".fragment.LoginFragment">
     <androidx.cardview.widget.CardView
         android:layout_width="200dp"
         android:layout_height="200dp"
@@ -14,18 +13,15 @@
         app:cardBackgroundColor="@color/saffron"
         app:cardElevation="20dp"
         android:visibility="gone"
-        android:id="@+id/stopButton"
-        >
+        android:id="@+id/stopButton">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
             android:text="Stop"
             android:layout_gravity="center"
-            android:textSize="30dp"
-            />
+            android:textSize="30dp" />
     </androidx.cardview.widget.CardView>
-
     <RelativeLayout
         android:id="@+id/loginFragment"
         android:visibility="visible"
@@ -81,5 +77,4 @@
             android:alpha="0"
             />
     </RelativeLayout>
-
 </RelativeLayout>

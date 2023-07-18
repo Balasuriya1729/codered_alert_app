@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/loginFragment">
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.example.codered.fragment.LoginFragment"
+        android:label="LoginPage"
+        tools:layout="@layout/fragment_login">
+        <action
+            android:id="@+id/action_loginFragment_to_homeFragment"
+            app:destination="@id/homeFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"
+            app:popUpTo="@+id/loginFragment"
+            app:popUpToInclusive="true"
+            />
+        <action
+            android:id="@+id/action_loginFragment_to_basicInformationFragment"
+            app:destination="@id/basicInformationFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.example.codered.fragment.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_homeFragment_to_alertIndividualFragment"
+            app:destination="@id/alertIndividualFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_alertTeamFragment"
+            app:destination="@id/alertTeamFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/basicInformationFragment"
+        android:name="com.example.codered.fragment.BasicInformationFragment"
+        android:label="fragment_basic_infomation"
+        tools:layout="@layout/fragment_basic_infomation" >
+        <action
+            android:id="@+id/action_basicInformationFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/alertIndividualFragment"
+        android:name="com.example.codered.fragment.AlertIndividualFragment"
+        android:label="fragment_alert_individual"
+        tools:layout="@layout/fragment_alert_individual" >
+    </fragment>
+    <fragment
+        android:id="@+id/alertTeamFragment"
+        android:name="com.example.codered.fragment.AlertTeamFragment"
+        android:label="fragment_alert_team"
+        tools:layout="@layout/fragment_alert_team" />
+</navigation>

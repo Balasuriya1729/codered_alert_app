@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.codered.R;
 import com.example.codered.Store;
-import com.example.codered.TeamDataChangeEvent;
+import com.example.codered.listener.TeamDataChangeEvent;
 import com.example.codered.model.MemberModel;
 
 import java.util.ArrayList;

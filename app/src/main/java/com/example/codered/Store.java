@@ -6,16 +6,25 @@ import android.util.Log;
 import android.util.TypedValue;
 
 import com.bumptech.glide.Glide;
+import com.example.codered.model.EventModel;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.api.services.calendar.model.Event;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
 public class Store {
+    public static int currentIndexBottomNav = 1;
+    public static boolean isPermissionGranted = false;
+    public static ArrayList<EventModel> events = new ArrayList<>();
+    public static Event firstEvent = null;
+    public static LocalDateTime firstEventLDT = null;
     public static boolean isPlayingAlert = false;
     public static boolean isAnimating = false;
     private static User user = new User();
@@ -30,6 +39,35 @@ public class Store {
         Store.user = new User(userGoogleAccount);
     }
 
+    public static Event getFirstEvent() {
+        return firstEvent;
+    }
+    public static void setFirstEvent(Event firstEvent) {
+        Store.firstEvent = firstEvent;
+    }
+
+    public static LocalDateTime getFirstEventLDT() {
+        return firstEventLDT;
+    }
+    public static void setFirstEventLDT(LocalDateTime firstEventLDT) {
+        Store.firstEventLDT = firstEventLDT;
+    }
+
+    public static int getCurrentIndexBottomNav() {
+        return currentIndexBottomNav;
+    }
+    public static void setCurrentIndexBottomNav(int currentIndexBottomNav) {
+        Store.currentIndexBottomNav = currentIndexBottomNav;
+    }
+
+    public static ArrayList<EventModel> getEvents() {
+        return events;
+    }
+
+    public static void setEvents(ArrayList<EventModel> events) {
+        Store.events = events;
+    }
+
     public static boolean isPlayingAlert() {
         return isPlayingAlert;
     }
@@ -41,9 +79,9 @@ public class Store {
     //Handlers
     public static int dpTopx(Context context, int dp){
         return (int) TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP,
-                dp,
-                context.getResources().getDisplayMetrics()
+            TypedValue.COMPLEX_UNIT_DIP,
+            dp,
+            context.getResources().getDisplayMetrics()
         );
     }
     public static boolean haveAUser(){
@@ -97,7 +135,7 @@ public class Store {
             dbMap.put("PhoneNumber", phNo);
         }
 
-        void addMeToFirebase(){
+        public void addMeToFirebase(){
             DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
             mDatabase.child("users").child(userId).setValue(dbMap);
             mDatabase.child("teams").child(teamName).setValue(userId);

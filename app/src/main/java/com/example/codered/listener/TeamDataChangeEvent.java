@@ -1,4 +1,4 @@
-package com.example.codered;
+package com.example.codered.listener;
 
 public interface TeamDataChangeEvent {
      void onTeamDataChange(boolean isFullySelected);

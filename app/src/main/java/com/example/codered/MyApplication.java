@@ -9,6 +9,10 @@ import com.google.api.client.util.DateTime;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+
 interface ErrorBoundary {
     void uncaughtException(Thread thread, Throwable throwable);
 }
@@ -37,8 +41,11 @@ public class MyApplication extends Application implements ErrorBoundary {
 
     private void logOnFirebase(String msg) {
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
-        String id = Store.getUser().getUserId()+ (new DateTime(System.currentTimeMillis()));
-        mDatabase.child("Logs").child(id).setValue(msg);
+        DateTime dateTime = (new DateTime(System.currentTimeMillis()));
+        String dateString = dateTime.toString().substring(0,19);
+
+        String id = Store.getUser().getUserId();
+        mDatabase.child("Logs").child(id+dateString).setValue(msg);
     }
 
     public void setupExceptionHandler() {

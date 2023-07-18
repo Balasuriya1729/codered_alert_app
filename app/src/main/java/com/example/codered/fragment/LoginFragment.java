@@ -1,6 +1,9 @@
-package com.example.codered.activity;
+package com.example.codered.fragment;
+
+import static com.example.codered.Store.isPermissionGranted;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,7 +12,9 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 import android.widget.ImageView;
@@ -21,9 +26,10 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.codered.R;
 import com.example.codered.Store;
@@ -45,29 +51,56 @@ import com.google.firebase.database.ValueEventListener;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
-public class LoginActivity extends AppCompatActivity {
+public class LoginFragment extends Fragment {
     private SignInButton signInButton;
     private GoogleSignInClient mGoogleSignInClient;
     private final Scope calendarScope = new Scope("https://www.googleapis.com/auth/calendar");
-    private boolean isPermissionGranted = false;
+
+    public LoginFragment() {
+        // Required empty public constructor
+    }
+
+    public static LoginFragment newInstance(String param1, String param2) {
+        LoginFragment fragment = new LoginFragment();
+        Bundle args = new Bundle();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        Log.i("Login Fragment Says", "On Create");
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        Log.i("Login Fragment Says", "On Create View");
+        return inflater.inflate(R.layout.fragment_login, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         if(
-            ContextCompat.checkSelfPermission(this, Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED ||
-            ContextCompat.checkSelfPermission(this, Manifest.permission.RECEIVE_SMS) != PackageManager.PERMISSION_GRANTED ||
-            ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED ||
-            ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
-            ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+            ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED ||
+                    ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.RECEIVE_SMS) != PackageManager.PERMISSION_GRANTED ||
+                    ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED ||
+                    ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
+                    ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
         ) {
             Log.i("Useful Info📄","Permission Requesting");
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_SMS, Manifest.permission.RECEIVE_SMS, android.Manifest.permission.SEND_SMS, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 103);
+            requestSMSPermissionLauncher.launch(new String[]{
+                    Manifest.permission.READ_SMS,
+                    Manifest.permission.RECEIVE_SMS,
+                    Manifest.permission.SEND_SMS,
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+            });
         } else isPermissionGranted = true;
 
-        signInButton = findViewById(R.id.googleSignIn);
+        signInButton = requireView().findViewById(R.id.googleSignIn);
         setGooglePlusButtonText();
 
         if(!Store.isPlayingAlert()) {
@@ -77,13 +110,13 @@ public class LoginActivity extends AppCompatActivity {
                 Log.i("Sign In Call Says", e.getMessage());
             }
         } else {
-            findViewById(R.id.stopButton).setVisibility(View.VISIBLE);
-            findViewById(R.id.loginFragment).setVisibility(View.GONE);
+            requireView().findViewById(R.id.stopButton).setVisibility(View.VISIBLE);
+            requireView().findViewById(R.id.loginFragment).setVisibility(View.GONE);
 
-            findViewById(R.id.stopButton).setOnClickListener(view -> {
+            requireView().findViewById(R.id.stopButton).setOnClickListener(view1 -> {
                 sendStopBroadCast();
-                findViewById(R.id.stopButton).setVisibility(View.GONE);
-                findViewById(R.id.loginFragment).setVisibility(View.VISIBLE);
+                requireView().findViewById(R.id.stopButton).setVisibility(View.GONE);
+                requireView().findViewById(R.id.loginFragment).setVisibility(View.VISIBLE);
                 try {
                     setGoogleSignIn();
                 } catch (JSONException e) {
@@ -92,45 +125,36 @@ public class LoginActivity extends AppCompatActivity {
             });
         }
     }
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode,
-                permissions,
-                grantResults);
 
-        if (requestCode == 103) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+    private final ActivityResultLauncher<String[]> requestSMSPermissionLauncher = registerForActivityResult(
+        new ActivityResultContracts.RequestMultiplePermissions(),
+        result -> {
+            Log.i("Login F Says", result+"");
+            if(
+                Boolean.TRUE.equals(result.get("android.permission.READ_SMS")) &&
+                Boolean.TRUE.equals(result.get("android.permission.READ_EXTERNAL_STORAGE")) &&
+                Boolean.TRUE.equals(result.get("android.permission.RECEIVE_SMS")) &&
+                Boolean.TRUE.equals(result.get("android.permission.SEND_SMS")) &&
+                Boolean.TRUE.equals(result.get("android.permission.WRITE_EXTERNAL_STORAGE"))
+            ){
                 isPermissionGranted = true;
+                Log.i("Login Fragment Says", "Calling Loader Animation After Permission Reqs");
                 startLoaderAnimation();
             }
-            else
-                Toast.makeText(LoginActivity.this, "SMS Permission Denied, You Cannot Proceed👮‍♂️", Toast.LENGTH_SHORT) .show();
+            else {
+                isPermissionGranted = false;
+                Toast.makeText(getContext(), "SMS Permission Denied, You Cannot Proceed👮‍♂️", Toast.LENGTH_SHORT) .show();
+            }
         }
+    );
 
-    }
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            handleSignInResult(task);
-        } else if(resultCode == RESULT_CANCELED) {
-          Log.i("SSO", "Cancelled");
-        } else {
-            Toast.makeText(this, "Only Rently Employees", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    //handlers
     public void sendStopBroadCast(){
         Intent i= new Intent();
         i.putExtra("data", "Stop Playing");
         i.setAction("stopPlayer");
         i.setComponent(new ComponentName("com.example.codered", "com.example.codered.receiver.AlertReceiver"));
         i.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
-        this.sendBroadcast(i);
+        requireContext().sendBroadcast(i);
 
         Log.i("Useful Info📜","Send Broadcast");
     }
@@ -148,19 +172,19 @@ public class LoginActivity extends AppCompatActivity {
     }
     private void setGoogleSignIn() throws JSONException {
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.server_client_id))
-            .requestServerAuthCode(getString(R.string.server_client_id))
-            .requestScopes(calendarScope)
-            .requestEmail()
-            .build();
+                .requestIdToken(getString(R.string.server_client_id))
+                .requestServerAuthCode(getString(R.string.server_client_id))
+                .requestScopes(calendarScope)
+                .requestEmail()
+                .build();
 
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+        mGoogleSignInClient = GoogleSignIn.getClient(requireContext(), gso);
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(requireContext());
 
         Log.i("Login Activity Says", "Fetching Started");
 
         try {
-            SharedPreferences preferences = getApplication().getSharedPreferences(getString(R.string.preferences_name), 0);
+            SharedPreferences preferences = requireContext().getSharedPreferences(getString(R.string.preferences_name), 0);
             if(!preferences.getString(getString(R.string.JSONObject), "NULL").equals("NULL")){
                 JSONObject jsonObject = new JSONObject(preferences.getString(getString(R.string.JSONObject), "NULL"));
                 Log.i("Login Activity Says", jsonObject.toString());
@@ -187,16 +211,16 @@ public class LoginActivity extends AppCompatActivity {
                     for (DataSnapshot ds : snapshot.getChildren())
                         Store.getUser().setSnapShotToData(ds);
 
-                    findViewById(R.id.InitialLoading).setVisibility(View.GONE);
-                    findViewById(R.id.appSlogan).setVisibility(View.VISIBLE);
-                    ImageView loginBanner = findViewById(R.id.loginBanner);
+                    requireView().findViewById(R.id.InitialLoading).setVisibility(View.GONE);
+                    requireView().findViewById(R.id.appSlogan).setVisibility(View.VISIBLE);
+                    ImageView loginBanner = requireView().findViewById(R.id.loginBanner);
                     Animation a = new Animation() {
                         @Override
                         protected void applyTransformation(float interpolatedTime, Transformation t) {
                             super.applyTransformation(interpolatedTime, t);
                             LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) loginBanner.getLayoutParams();
-                            layoutParams.topMargin = (int) (Store.dpTopx(LoginActivity.this, 100) * (1-interpolatedTime));
-                            findViewById(R.id.appSlogan).setAlpha(interpolatedTime);
+                            layoutParams.topMargin = (int) (Store.dpTopx(requireContext(), 100) * (1-interpolatedTime));
+                            requireView().findViewById(R.id.appSlogan).setAlpha(interpolatedTime);
                             loginBanner.requestLayout();
                         }
                     };
@@ -213,13 +237,26 @@ public class LoginActivity extends AppCompatActivity {
 
         }
         else{
-            if(isPermissionGranted) startLoaderAnimation();
+            if(isPermissionGranted) {
+                Log.i("Login Fragment Says", "Calling Loader Animation Since Account is NULL");
+                startLoaderAnimation();
+            }
         }
-        
-        ActivityResultLauncher<Intent> startActivityForResult = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> Log.e("Google Sign in error", result.getResultCode()+"")
 
+        ActivityResultLauncher<Intent> startActivityForResult = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    Intent data = result.getData();
+                    Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+                    handleSignInResult(task);
+                }
+                else if(result.getResultCode() == Activity.RESULT_CANCELED) {
+                    Log.i("SSO", "Cancelled");
+                } else {
+                    Toast.makeText(getContext(), "Only Rently Employees", Toast.LENGTH_SHORT).show();
+                }
+            }
         );
 
         signInButton.setOnClickListener(view -> {
@@ -227,21 +264,20 @@ public class LoginActivity extends AppCompatActivity {
                 Intent signInIntent = mGoogleSignInClient.getSignInIntent();
                 startActivityForResult.launch(signInIntent);
             } else{
-                Toast.makeText(this, "Permissions Denied, Restart the App😅", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "Permissions Denied, Restart the App😅", Toast.LENGTH_SHORT).show();
             }
         });
     }
-
     private void startLoaderAnimation(){
         new android.os.Handler(Looper.myLooper()).postDelayed(() -> {
-            findViewById(R.id.InitialLoading).setVisibility(View.GONE);
-            ImageView loginBanner = findViewById(R.id.loginBanner);
+            requireView().findViewById(R.id.InitialLoading).setVisibility(View.GONE);
+            ImageView loginBanner = requireView().findViewById(R.id.loginBanner);
             Animation a = new Animation() {
                 @Override
                 protected void applyTransformation(float interpolatedTime, Transformation t) {
                     super.applyTransformation(interpolatedTime, t);
                     LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) loginBanner.getLayoutParams();
-                    layoutParams.topMargin = (int) (Store.dpTopx(LoginActivity.this, 100) * (1-interpolatedTime));
+                    layoutParams.topMargin = (int) (Store.dpTopx(requireContext(), 100) * (1-interpolatedTime));
                     loginBanner.requestLayout();
                 }
             };
@@ -251,23 +287,23 @@ public class LoginActivity extends AppCompatActivity {
             new android.os.Handler(Looper.myLooper()).postDelayed(() -> {
                 Log.i("Login Says", "Starting Animation");
 
-                findViewById(R.id.buttonLayout).setVisibility(View.VISIBLE);
+                requireView().findViewById(R.id.buttonLayout).setVisibility(View.VISIBLE);
             }, 1000);
         }, 2000);
     }
     private void navigateToMainActivity(GoogleSignInAccount account, String intent_msg) {
-        if(intent_msg.equals("Last Sign")) {
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.putExtra("signInType", intent_msg);
+        NavHostFragment navHostFragment =
+                (NavHostFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+        NavController navController = navHostFragment.getNavController();
 
-            startActivity(intent);
+        if(intent_msg.equals("Last Sign")) {
+            Bundle args = new Bundle();
+            args.putString("signInType", intent_msg);
+
+            navController.navigate(R.id.homeFragment, args);
         } else{
             Store.setUser(account);
-            Intent intent2 = new Intent(this, BasicInformationActivity.class);
-            startActivity(intent2);
+            navController.navigate(R.id.basicInformationFragment);
         }
     }
     private void handleSignInResult(@NonNull Task<GoogleSignInAccount> completedTask) {
